@@ -7,8 +7,8 @@ import threading
 
 text= ""
 
-ip_address= "192.168.80.48"  
-port_number= 8080           
+ip_address= "192.168.80.48"  # change this
+port_number= 8080           # change this 
 
 time_interval = 10
 
